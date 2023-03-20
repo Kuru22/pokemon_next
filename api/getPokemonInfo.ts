@@ -10,7 +10,7 @@ export const getPokemonInfo = async (nameOrId: string) => {
 
         // RESOLVE ALL POEMON ABILITY PROMISES
 
-        const abilitiesPromises = await Promise.all(
+        const abilityPromises = await Promise.all(
             data.abilities.map((ability) => {
             return pokeApi
                     .get<Pokemon>(`/ability/${ability.ability.name}`)
@@ -22,7 +22,7 @@ export const getPokemonInfo = async (nameOrId: string) => {
 
         // GET POKEMON ABILITIES INFO
 
-        const abilities = abilitiesPromises.map((ability) => {
+        const abilities = abilityPromises.map((ability) => {
 
             const abilityDescription = ability.effect_entries[1]?.effect || ability.flavor_text_entries[7].flavor_text;
 
