@@ -149,6 +149,7 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
         })
     }))
 
+
     const abilities = abilityPromises.map(ability => {
 
         const abilityDescription = ability.effect_entries[1]?.effect || ability.flavor_text_entries[7].flavor_text;
