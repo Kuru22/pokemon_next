@@ -143,20 +143,19 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
     const { name } = params as { name: string};
     const { data } = await pokeApi.get<Pokemon>(`/pokemon/${name}`);
 
-    const abilitiesPromises = await Promise.all( data.abilities.map(ability => {
+    const abilityPromises = await Promise.all( data.abilities.map(ability => {
         return pokeApi.get<Pokemon>(`/ability/${ability.ability.name}`).then(results => {
             return results.data;
         })
     }))
 
-    const abilities = abilitiesPromises.map(ability => {
+    const abilities = abilityPromises.map(ability => {
 
         const abilityDescription = ability.effect_entries[1]?.effect || ability.flavor_text_entries[7].flavor_text;
 
         return {
             name: ability.name,
             description: abilityDescription
-
         }
     })
 
