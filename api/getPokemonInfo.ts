@@ -13,9 +13,9 @@ export const getPokemonInfo = async (nameOrId: string) => {
         const abilitiesPromises = await Promise.all(
             data.abilities.map((ability) => {
             return pokeApi
-                .get<Pokemon>(`/ability/${ability.ability.name}`)
-                .then((results) => {
-                return results.data;
+                    .get<Pokemon>(`/ability/${ability.ability.name}`)
+                    .then((results) => {
+                    return results.data;
                 });
             })
         );
@@ -23,12 +23,14 @@ export const getPokemonInfo = async (nameOrId: string) => {
         // GET POKEMON ABILITIES INFO
 
         const abilities = abilitiesPromises.map((ability) => {
-        const abilityDescription = ability.effect_entries[1].effect;
 
-        return {
-            name: ability.name,
-            description: abilityDescription,
-        };
+            const abilityDescription = ability.effect_entries[1]?.effect || ability.flavor_text_entries[7].flavor_text;
+
+            return {
+                name: ability.name,
+                description: abilityDescription,
+            };
+            
         });
 
         // BUILD THE POKEMON OBJECT WITH ALL THE INFO
@@ -50,6 +52,7 @@ export const getPokemonInfo = async (nameOrId: string) => {
         return pokemon;
 
     } catch (error) {
+        console.log(error);
         return null;
     }
 }
