@@ -10,11 +10,12 @@ interface Props {
 }
 
 const PokemonHero: FC<Props> = ({pokemon}) => {
+
     return (
         <Grid className={styles.pokemon_hero} xs={12}>
             <Card.Image 
                 className={styles.pokemon_image}
-                src={pokemon.sprites.other?.dream_world.front_default || '/no-image.png'}
+                src={pokemon.sprites.pokemon_image || '/no-image.png'}
                 alt={`image of ${pokemon.name}`}
                 width={350}
                 height={350}

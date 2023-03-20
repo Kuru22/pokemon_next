@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import { Button, Grid, Text } from "@nextui-org/react";
+
 import confetti from 'canvas-confetti';
 
 import { Layout } from "@/components/layouts";
 import { PokemonAbilityCard, PokemonHero, PokemonSpritesCard, PokemonStatCard } from "@/components/pokemon";
 
-import { pokeApi } from "@/api";
 import { Pokemon, PokemonListResponse } from "@/interfaces";
+import { pokeApi } from "@/api";
 import { localFavorites } from "@/utils";
+import getPokemonInfo from "@/api/getPokemonInfo";
 
 import styles from '../../styles/PokemonInfo.module.css';
 
@@ -141,37 +143,23 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 export const getStaticProps: GetStaticProps = async ({params}) => {
     
     const { name } = params as { name: string};
-    const { data } = await pokeApi.get<Pokemon>(`/pokemon/${name}`);
+    
+    const pokemon = await getPokemonInfo( name );
 
-    const abilitiesPromises = await Promise.all( data.abilities.map(ability => {
-        return pokeApi.get<Pokemon>(`/ability/${ability.ability.name}`).then(results => {
-            return results.data;
-        })
-    }))
-
-    const abilities = abilitiesPromises.map(ability => {
-
-        const abilityDescription = ability.effect_entries[1].effect;
-
+    if (!pokemon) {
         return {
-            name: ability.name,
-            description: abilityDescription
-
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
         }
-    })
-
-    const pokemon = {
-        id: data.id,
-        name: data.name,
-        sprites: data.sprites,
-        stats: data.stats,
-        abilities
-    }
+    }    
 
     return {
         props: {
            pokemon: pokemon
-        }
+        },
+        revalidate: 86400 // 60 * 60 *24
     }
 }
 

@@ -81,6 +81,7 @@ export interface Versions {
 }
 
 export interface Sprites {
+    pokemon_image:      string;
     back_default:       string;
     back_female:        null;
     back_shiny:         string;
